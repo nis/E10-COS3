@@ -1,0 +1,161 @@
+\documentclass[a4wide,10pt]{article}
+%\usepackage{a4wide}
+\usepackage[applemac,utf8]{inputenc}
+\usepackage[danish]{babel}
+\usepackage[T1]{fontenc}
+\usepackage{pdfsync}
+\usepackage{amsmath,amssymb,amsfonts} 
+\usepackage[pdftex]{graphicx}
+\usepackage{wrapfig}
+\usepackage{color}
+\usepackage[small,bf]{caption}
+
+\begin{document}
+\title{COS3 lektion 4}
+\author{Nis Sarup}
+\date{\today}
+\maketitle
+
+
+\addtocounter{section}{1}
+\section{System Structures} % (fold)
+\label{sec:kapitel_2}
+
+\subsection{Operating System Services} % (fold)
+\label{sub:2_1}
+\begin{itemize}
+	\item  OS har forskellige services.
+\end{itemize}
+% subsection 2_1 (end)
+
+\subsection{User OS Interface} % (fold)
+\label{sub:2_2}
+\begin{itemize}
+	\item 2 slags shells
+	\begin{itemize}
+		\item Indbyggede kommandoer
+		\item Kalder eksterne programmer (Bedre portabilitet)
+	\end{itemize}
+	\item GUI = Graphical User Interface
+\end{itemize}
+% subsection 2_2 (end)
+
+\subsection{System Calls} % (fold)
+\label{sub:2_3}
+\begin{itemize}
+	\item Systemkald oftest brugt gennem API: WIN32, POSIX, JAVA.
+	\item Forskellige systemer kan have samme API.
+\end{itemize}
+% subsection 2_3 (end)
+
+\subsection{Types of System Calls} % (fold)
+\label{sub:2_4}
+\begin{itemize}
+	\item Systemkaldstyper:
+	\begin{itemize}
+		\item Processkontrol
+		\item Fil
+		\item Device
+		\item Information
+		\item Kommunikation
+		\item Sikkerhed
+	\end{itemize}
+\end{itemize}
+% subsection 2_4 (end)
+
+\subsection{System Programer} % (fold)
+\label{sub:2_5}
+\begin{itemize}
+	\item Systemprogrammer kan være små og enkle, evt. kun et kald til API, eller mere komplekse.
+\end{itemize}
+% subsection 2_5 (end)
+
+\subsection{OS Design} % (fold)
+\label{sub:2_6}
+\begin{itemize}
+	\item At splitte policy (why) fra mechanism (how) er godt: Mere fleksibelt.
+	\item Implementation i high-level sprog = større portabilitet og bedre hastighed med bedre compilere.
+\end{itemize}
+% subsection 2_6 (end)
+
+\subsection{Operating System Structure} % (fold)
+\label{sub:2_7}
+\begin{itemize}
+	\item Ny hardware tillader nye OS.
+	\item Microkernel, layered vs. monolithic structure
+	\item Loadable modules.
+\end{itemize}
+% subsection 2_7 (end)
+% section kapitel_2 (end)
+
+\section{Process Management} % (fold)
+\label{sec:kapitel_3}
+
+\subsection{Process Concept} % (fold)
+\label{sub:process_concept}
+\begin{itemize}
+	\item Process = program in execution = aktivt vs. det inaktive program på disken.
+	\item Processer har states
+	\begin{itemize}
+		\item New
+		\item Running
+		\item Waiting
+		\item Ready
+		\item Terminated
+	\end{itemize}
+	\item Process Control Block (PCB) for hver enkelt process indeholder:
+	\begin{itemize}
+		\item State
+		\item PID
+		\item Program Counter
+		\item Registre
+		\item SPU scheduling
+		\item Memory Management
+		\item Accounting
+		\item I/O status
+	\end{itemize}
+	\item Threads skifter CPU'en mellem flere processer.
+\end{itemize}
+% subsection process_concept (end)
+
+\subsection{Process Scheduling} % (fold)
+\label{sub:3_2}
+\begin{itemize}
+	\item Queues for forskellige resourcer styrer hvornår en process får adgang til den enkelte resource. F. eks. CPU, Disk, Netværk, etc.
+	\item Short-term schedule vælger processer der er ready in-memory og sender dem til CPU'en.
+	\item Long-term scheduler vælger processer fra disken og lægger dem i ready-køen.
+	\item Medium-term scheduler står for at swappe processor ind og ud.
+	\item (Hvad er forskellen på Medium og Long?)
+	\item Context Switch: State save of current process og state restore of new process.
+\end{itemize}
+% subsection 3_2 (end)
+
+\subsection{Operations in Processes} % (fold)
+\label{sub:3_3}
+\begin{itemize}
+	\item Process tree: Parent/children processes.
+	\item PID = Process IDentifier.
+	\item Parent process kan eksekvere sideløbende eller vente på at child-processen terminerer.
+	\item Child processer kan være en kopi af parent eller loades fra et nyt program.
+	\item En process terminere med exit(); kommandoen og returner typisk en integer.
+\end{itemize}
+% subsection 3_3 (end)
+
+\subsection{Interprocess Communication} % (fold)
+\label{sub:3_4}
+\begin{enumerate}
+	\item Shared Memory
+	\begin{itemize}
+		\item Fælles hukkommelsesområde begge processer kan læse/skrive fra/til.
+	\end{itemize}
+	\item Message Passing
+	\begin{itemize}
+		\item Beskeder sendes mellem processer.
+		\item Processer behøver ikke nødvendigvis at være på samme computer.
+		\item Mailboxes ejes enten af en process (server) og kan sendes til af flere klienter (men kun læses fra af serveren) eller den kan ejes af sytemet hvor efter processen der lavede mailboxen kan give flere processer læse-adgang.
+	\end{itemize}
+\end{enumerate}
+% subsection 3_4 (end)
+
+% section kapitel_3 (end)
+\end{document}
