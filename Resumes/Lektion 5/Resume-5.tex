@@ -1,0 +1,219 @@
+\documentclass[a4wide,10pt]{article}
+%\usepackage{a4wide}
+\usepackage[applemac,utf8]{inputenc}
+\usepackage[danish]{babel}
+\usepackage[T1]{fontenc}
+\usepackage{pdfsync}
+\usepackage{amsmath,amssymb,amsfonts} 
+\usepackage[pdftex]{graphicx}
+\usepackage{wrapfig}
+\usepackage{color}
+\usepackage[small,bf]{caption}
+
+\begin{document}
+\title{COS3 lektion 5}
+\author{Nis Sarup}
+\date{\today}
+\maketitle
+
+
+\addtocounter{section}{3}
+\section{Multithreaded Programming} % (fold)
+\label{sec:multithreaded_programming}
+\subsection{Overview} % (fold)
+\label{sub:overview}
+\begin{itemize}
+	\item Thread = basic unit of CPU utilization.
+	\begin{itemize}
+		\item Has it's own thread ID, program counter, register set and a stack.
+		\item Shares code section, data section and resources with other threads belonging to the same process.
+	\end{itemize}
+	\item A multithreaded process can multitask.
+	\item Benefits of using threads includes:
+	\begin{itemize}
+		\item Better responsiveness
+		\item Resource sharing between threads is more efficient
+		\item Better economy as context switching threads is "cheaper" than context switching processes.
+		\item Better scaleability, single-thread processes can only be run on one CPU-core. Using threads more than one core can be used.
+	\end{itemize}
+\end{itemize}
+% subsection overview (end)
+
+\subsection{Multithreading Models} % (fold)
+\label{sub:multithreading_models}
+\begin{itemize}
+	\item Many-to-one model:
+	\begin{itemize}
+		\item Many user threads maps to one kernel thread.
+		\item One thread can block the others.
+		\item No parallel running of threads on multi-core systems.
+	\end{itemize}
+	\item One-to-one model:
+	\begin{itemize}
+		\item One user thread maps to one kernel thread.
+		\item Not as efficient as creating one user thread will create a new kernel thread.
+	\end{itemize}
+	\item Many-to-many model:
+	\begin{itemize}
+		\item A pool of user threads maps to a pool of kernel thread of equal or lesser numbers
+		\item Cheaper than one-to-one.
+		\item True concurrency not achieved.
+	\end{itemize}
+	\item Two-level model:
+	\begin{itemize}
+		\item Combined many-to-many and one-to-one.
+		\item Threads can be assigned to the kerne-thread pool or get an individual kernel thread.
+	\end{itemize}
+\end{itemize}
+% subsection multithreading_models (end)
+\addtocounter{subsection}{1}
+\subsection{Threading Issues} % (fold)
+\label{sub:threading_issues}
+\begin{itemize}
+	\item Fork works differently on multi-thread processes
+	\item Exec do not (mostly)
+	\item Threads can cancel other threads or threads can check whether or not it should be running and self-cancel.
+	\item Thread-pools:
+	\begin{itemize}
+		\item A number of threads are created at the start of a process.
+		\item Threads idle until works is assigned them.
+		\item If no threads is free, process wait for one to be freed.
+		\item Good on systems that cannot handle large numbers of threads.
+	\end{itemize}
+\end{itemize}
+% subsection threading_issues (end)
+% section multithreaded_programming (end)
+
+\section{Process Scheduling} % (fold)
+\label{sec:process_scheduling}
+\subsection{Basic Concepts} % (fold)
+\label{sub:basic_concepts}
+\begin{itemize}
+	\item Scheduling is needed when multiple processes run on the same CPU.
+	\item Scheduling decides which process in the ready queue gets to run.
+	\item The goal is to have the CPU working at max all the time.
+	\item Most processes uses the CPU only in small CPU-bursts lasting milliseconds.
+	\item Processes in e.g. WAITing state is switched out, and a READY process can run.
+	\item Scheduling decisions may take place:
+	\begin{itemize}
+		\item When a process state switches from RUNNING to WAIT state.
+		\item When a process switches from RUNNING to READy state.
+		\item When a process switches from WAITing to READY state.
+		\item When a process terminates.
+	\end{itemize}
+\end{itemize}
+% subsection basic_concepts (end)
+\subsection{Scheduling Criteria} % (fold)
+\label{sub:scheduling_criteria}
+\begin{itemize}
+	\item What to measure to find the best Scheduling Algorithm:
+	\begin{itemize}
+		\item CPU utilization: Is it working all the time?
+		\item Throughput: How many processes are completed per time unit?
+		\item Turnaround time: How long from process start to process finish.
+		\item Waiting time: Sum of periods waiting in the READY queue.
+		\item Response time: Time from process start to first response.
+	\end{itemize}
+\end{itemize}
+% subsection scheduling_criteria (end)
+
+\subsection{Scheduling Algorithms} % (fold)
+\label{sub:scheduling_algorithms}
+\begin{itemize}
+	\item First-Come, First-Served:
+	\begin{itemize}
+		\item Not very optimized.
+		\item Waiting time can be large, or small depending on which order the processes are started.
+	\end{itemize}
+	\item Shortest-Job-First:
+	\begin{itemize}
+		\item Gives the minimum average waiting time (Provably).
+		\item Hard to know the length of the next CPU burst of a given process.
+	\end{itemize}
+	\item Priority
+	\begin{itemize}
+		\item Low-priority processes can be blocked indefinitely.
+		\item Can be partially solved by using aging. Old processes get's a higher priority.
+	\end{itemize}
+	\item Round-Robin
+	\begin{itemize}
+		\item FIFO-queue where each process is, in turn, given access to the CPU for a given time period.
+		\item The process is then returned to the tail of the READY queue.
+		\item New processes are added to the tail as well.
+		\item Effectiveness varies according to time-slice-width and context-switch time.
+	\end{itemize}
+	\item Multilevel Queue
+	\begin{itemize}
+		\item Processes are added to different READY queues according.
+		\item Different queues have different priorities,
+		\item E.g. Foreground processes need higher priority than background processes, so the foreground queue have higher priority than the background queue.
+		\item Scheduling between queues can vary.
+	\end{itemize}
+	\item Multilevel Feedback Queue
+	\begin{itemize}
+		\item Several queues determined by time-slice-size.
+		\item New processes enter first queue and are getting a small time to run on the CPU.
+		\item If they take longer, they are preempted and sink to the next queue.
+		\item The next queue is run if the first queue is empty.
+		\item Long running processes is moved down to the last queue, FCFS.
+	\end{itemize}
+\end{itemize}
+% subsection scheduling_algorithms (end)
+
+\subsection{Thread Scheduling} % (fold)
+\label{sub:thread_scheduling}
+\begin{itemize}
+	\item User threads use process-contention scope
+	\item Kernel threads use system-contention scope
+\end{itemize}
+% subsection thread_scheduling (end)
+
+\subsection{Multiple-Processor} % (fold)
+\label{sub:multiple_processor}
+\begin{itemize}
+	\item On systems with multiple CPUs load sharing becomes possible, which increases the complexity of the scheduling.
+	\item Asymmetric multiprocessing:
+	\begin{itemize}
+		\item One CPU for system
+		\item The rest for user processes
+	\end{itemize}
+	\item Symmetric multiprocessing
+	\begin{itemize}
+		\item Each CPU is self-scheduling.
+		\item Each CPU chooses a process from the READY queue and runs it.
+	\end{itemize}
+	\item Processor Affinity:
+	\begin{itemize}
+		\item Because of the high cost of repopulating caches, it is desirable for a process to run on the same CPU and not migrate to another CPU with a different cache.
+	\end{itemize}
+	\item Load Balancing:
+	\begin{itemize}
+		\item Push migration: A task looks at CPUs and pushed processes from an overworked CPU to an idle CPU.
+		\item Pull migration: Idle CPUs pulls processes from overworked CPUs.
+	\end{itemize}
+	\item Memory stall can be prevented by having multiple hardware threads on each core.
+	\item Virtualization:
+	\begin{itemize}
+		\item A host OS creates virtual CPUs and assign them to guest any guest OS.
+	\end{itemize}
+\end{itemize}
+% subsection multiple_processor (end)
+
+\subsection{Operating System Examples} % (fold)
+\label{sub:operating_system_examples}
+\begin{itemize}
+	\item Look in book.
+\end{itemize}
+% subsection operating_system_examples (end)
+
+\subsection{Algoritm Evaluation} % (fold)
+\label{sub:algoritm_evaluation}
+\begin{itemize}
+	\item Choose criteria, evaluate the given algorithms and choose the best one.
+	\item Deterministic modeling demands known input values, but gives out nice concrete, easily comparable, values for each algorithm.
+	\item Queuing models are only approximations of real systems.
+	\item Simulation requires building a model of the system, but also gives nice comparable values. 
+\end{itemize}
+% subsection algoritm_evaluation (end)
+% section process_scheduling (end)
+\end{document}
