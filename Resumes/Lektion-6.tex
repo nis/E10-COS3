@@ -17,5 +17,70 @@
 \maketitle
 
 
+\addtocounter{section}{5}
+\section{Synchronization} % (fold)
+\label{sec:background}
 
+\subsection{Background} % (fold)
+\label{sub:background}
+\begin{itemize}
+	\item Race-conditions are bad.
+	\item For Shared Memory to work, the processes involved needs to be synchronized.
+\end{itemize}
+% subsection background (end)
+
+\subsection{The Critical-Section Problem} % (fold)
+\label{sub:the_critical_section_problem}
+\begin{itemize}
+	\item Each process has a critical section, and only one process can make changes in its critical section at any one time.
+	\item Nonpreemptive kernels do not suffer from race conditions. (at least the kernel-threads do not).
+\end{itemize}
+% subsection the_critical_section_problem (end)
+
+\addtocounter{subsection}{2}
+\subsection{Semaphores} % (fold)
+\label{sub:semaphores}
+\begin{itemize}
+	\item A Semaphore is an integer variable accessed only through wait() and signal().
+	\item A semaphore can be binary (0 or 1) or an integer of any size.
+	\item A process do a wait() on the semaphore and if the count goes below zero, the wait command halts it until another process does a signal() and the semaphores counter increases, signaling that a resource have become available.
+	\item This approach produces "busy waiting" or spinlock, which is a bad thing.
+	\item Spinlock can be overcome by adding a waiting queue to the semaphore and any waiting processes can then block while waiting. (Wait() and Signal() must then be able to add/block processes and remove/unblock processes)
+	\item Interrupt must be disabled while wait() and signal() are running lest two processes can call one of them at the same time, thus resulting in a race condition.
+	\item Deadlock is when two, or more processes are wait()ing for each other to signal().
+	\item Starvation is when a process never leaves the semaphores queue.
+	\item Priority inversion is when a high-priority process is made to wait longer than necessary by a lower priority process.
+\end{itemize}
+% subsection semaphores (end)
+
+\subsection{Classical Synchronization Problem} % (fold)
+\label{sub:classical_synchronization_problem}
+\begin{itemize}
+	\item Different synchronization problems and solutions.
+\end{itemize}
+% subsection classical_synchronization_problem (end)
+
+\addtocounter{subsection}{1}
+\subsection{Monitors} % (fold)
+\label{sub:monitors}
+\begin{itemize}
+	\item A monitor is a high-level construct that ensures that deadlocks and starvation does not occur.
+\end{itemize}
+% subsection monitors (end)
+
+\subsection{Atomic Transaction} % (fold)
+\label{sub:atomic_transaction}
+\begin{itemize}
+	\item Atomic: One block of instructions is executed in its entirety, or not at all.
+	\item After a process executes an (atomic) set of instructions it commits() the changes and the changes are finally saved. If no commit() the changes are rolled back to what they were before the atomic instructions were started.
+	\item Concurrent Atomic Transactions:
+	\begin{itemize}
+		\item Serial Schedule: One atomic transaction follows another. (Too restrictive)
+		\item Locking Protocol: Each transaction locks a data-item. In some cases another transaction may read from it, in others not.
+		\item Two-Phase Locking Protocol: In the Growing Phase a transaction can obtain locks but mot release any. Vice-versa in the Shrinking Phase.
+		\item Timestamp-Based Protocols: Use timestamp to determine the order of transactions.
+	\end{itemize}
+\end{itemize}
+% subsection atomic_transaction (end)
+% section background (end)
 \end{document}
