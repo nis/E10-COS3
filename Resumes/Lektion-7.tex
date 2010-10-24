@@ -20,6 +20,91 @@
 \addtocounter{section}{6}
 \section{Deadlocks} % (fold)
 \label{sec:deadlocks}
+\begin{itemize}
+	\item Deadlock: When two processes are waiting for each other and neither can do anything before the other.
+\end{itemize}
+\subsection{System Model} % (fold)
+\label{sub:system_model}
+\begin{itemize}
+	\item System Model: Each resource must be REQUESTED before USE and RELEASED again.
+	\item Deadlock if two processes holds a resource each and will not RELEASE it until it has gotten access to the one the other process holds.
+\end{itemize}
+% subsection system_model (end)
 
+\subsection{Deadlock Characterization} % (fold)
+\label{sub:deadlock_characterization}
+\begin{itemize}
+	\item Deadlock: Processes never finish executing and system resources are tied up, preventing other jobs from starting.
+	\item Necessary conditions:
+	\begin{itemize}
+		\item Mutual exclusion:At least one resource must be held in a non-shareable mode.
+		\item Hold and Wait: A process must be holding at least one resource and be waiting to acquire additional resources currently held by other processes.
+		\item No preemption: Resources can only be released by the process holding it.
+		\item Circular wait: P1 waits for P2 which waits for P3 which waits for p4... 
+	\end{itemize}
+\end{itemize}
+% subsection deadlock_characterization (end)
+
+\subsection{Methods for Handling Deadlocks} % (fold)
+\label{sub:methods_for_handling_deadlocks}
+\begin{itemize}
+	\item A protocol to prevent and avoid deadlocks.
+	\item Enable the system to detect and recover from deadlocks.
+	\item Ignore and pretend deadlocks never happens.
+\end{itemize}
+% subsection methods_for_handling_deadlocks (end)
+
+\subsection{Deadlock Prevention} % (fold)
+\label{sub:deadlock_prevention}
+\begin{itemize}
+	\item Ensure that at least one fo the four conditions for a deadlock cannot hold.
+\end{itemize}
+% subsection deadlock_prevention (end)
+
+\subsection{Deadlock Avoidance} % (fold)
+\label{sub:deadlock_avoidance}
+\begin{itemize}
+	\item The system can identify which REQUESTs for resources would result in a deadlock and makes the requesting process wait until the REQUEST would no longer result in a deadlock.
+\end{itemize}
+% subsection deadlock_avoidance (end)
+
+\subsection{Deadlock Detection} % (fold)
+\label{sub:deadlock_detection}
+\begin{itemize}
+	\item Detection of deadlocks requires two thing:
+	\begin{itemize}
+		\item A deadlock detecting algorithm.
+		\item An algorithm to recover from the deadlock.
+	\end{itemize}
+	\item It is necessary to evaluate how often to run the detecting algorithm.
+	\item Once every resource REQUESt would be too often.
+	\item When CPU utilization drops below 40\% is more appropriate.
+\end{itemize}
+% subsection deadlock_detection (end)
+
+\subsection{Recovery from Deadlocks} % (fold)
+\label{sub:recovery_from_deadlocks}
+\begin{itemize}
+	\item Process Termination:
+	\begin{itemize}
+		\item Abort all deadlocked processes.
+		\begin{itemize}
+			\item Expensive
+			\item Much will need to be recomputed.
+		\end{itemize}
+		\item Abort one deadlocked process until deadlock resolves.
+		\begin{itemize}
+			\item Deadlock detecting algorithm must run after each termination.
+			\item System must decide which process to terminate from some parameters: priority, runtime, etc.
+		\end{itemize}
+	\end{itemize}
+	\item Resource preempting has issues:
+	\begin{itemize}
+		\item Which resource to preempt? Which parameters to consider.
+		\item Should the resource be rolled back?
+		\item How to prevent starvation (The process is always going to be preempted on the same resource).
+	\end{itemize}
+\end{itemize}
+% subsection recovery_from_deadlocks (end)
 % section deadlocks (end)
 \end{document}
