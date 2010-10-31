@@ -18,5 +18,62 @@
 
 
 \addtocounter{section}{7}
+\section{Memory Management} % (fold)
+\label{sec:memory_management}
+\subsection{Background} % (fold)
+\label{sub:background}
+\begin{itemize}
+	\item Registers are fast
+	\item Memory is not fast
+	\item Each process needs a separate memory space set by a base and limiter register
+	\item Attempting to write to memory outside the process own space is denied
+	\item An address for a memory segment from the CPU: logical address
+	\item An address for a memory segment from the memory unit: physical address
+	\item Dynamic loading: ONly load what's needed
+\end{itemize}
+% subsection background (end)
 
+\subsection{Swapping} % (fold)
+\label{sub:swapping}
+\begin{itemize}
+	\item Inactive processes are not kept in memory, but relocated to other storage. Fast disk, etc.
+	\item Swapping is rather slow.
+\end{itemize}
+% subsection swapping (end)
+
+\subsection{Contiguous Memory Allocation} % (fold)
+\label{sub:contiguous_memory_allocation}
+\begin{itemize}
+	\item Each process is contained in a single contiguous section of memory.
+	\item Multiple partition method: Memory is partitioned into fixed width segments. Each process gets a segment.
+	\item Variable Partition: A table of "holes" in the memory are maintained. A new process gets a ssigned to a matching hole.
+	\begin{itemize}
+		\item First Fit: First hole that's big enough.
+		\item Best Fit: Smallest hole that's big enough.
+		\item Worst Fit: Largest hole is selected.
+	\end{itemize}
+	\item 50-percent rule: Given N allocated blocks, another 0.5 N blocks is lost to fragmentation.
+	\item Compaction: Shuffle memory contents to make one big hole.
+\end{itemize}
+% subsection contiguous_memory_allocation (end)
+
+\subsection{Paging} % (fold)
+\label{sub:paging}
+\begin{itemize}
+	\item Paging permits the physical address space of a process to be non-contiguous.
+	\item Paging can be implemented in hardware and in software.
+	\item Logical memory is split into pages
+	\item Physical memory is split into frames
+	\item The page table holds which page resides on which frame
+	\item Pages can be shared between processes.
+\end{itemize}
+% subsection paging (end)
+
+\subsection{Structure of the Page Table} % (fold)
+\label{sub:structure_of_the_page_table}
+\begin{itemize}
+	\item Large Page tables can be page tabled.
+\end{itemize}
+% subsection structure_of_the_page_table (end)
+% section memory_management (end)
 \end{document}
