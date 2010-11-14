@@ -18,5 +18,230 @@
 
 
 \addtocounter{section}{8}
+\section{Virtual-Memory Management} % (fold)
+\label{sec:virtual_memory_management}
+\subsection{Background} % (fold)
+\label{sub:background}
+\begin{itemize}
+	\item Most of Chapter 8 unnecessary with Virtual-Memory.
+	\item Dynamic loading eases the restrictions.
+	\item Having routines and data rarely used in a program take up physical memory is wasteful.
+	\item Virtual-Memory allows programs to require much larger memory than what is available as physical memory.
+	\item More programs can be run at one time, increasing CPU usage.
+	\item Faster running of programs as less I/O is needed.
+	\item Virtual-Memory separates logical memory from physical memory.
+	\item Shared Libraries is easy with Virtual-Memory.
+	\item Likewise is Shared Memory easy.
+\end{itemize}
+% subsection background (end)
 
+\subsection{Demand Paging} % (fold)
+\label{sub:demand_paging}
+\begin{itemize}
+	\item Demand Paging: Load pages only as they are needed.
+	\item Similar to swapping, but with a lazy swapper.
+	\item Valid/Invalid bit in page-table specifies wether a page is in memory or on disk.
+	\item OS traps a request for an invalid page, loads the page into memory and restart the instruction.
+	\item Demand Paging is not as quick as using only physical memory.
+	\item The Effective Access Time depends on the speed of the medias and the probability of page faults.
+\end{itemize}
+% subsection demand_paging (end)
+
+\subsection{Copy-on-Write} % (fold)
+\label{sub:copy_on_write}
+	\begin{itemize}
+		\item Newly forked processes share pages.
+		\item Pages that might diverge between the processes is marked for copy-on-write.
+		\item As soon as one process write to one such page, it is copied to a new page and the written to.
+		\item Processes will end up with as many shared pages as possible.
+	\end{itemize}
+% subsection copy_on_write (end)
+
+\subsection{Page Replacement} % (fold)
+\label{sub:page_replacement}
+\begin{itemize}
+	\item Page faults can also manifest ob over allocated systems, when no free pages are available.
+\end{itemize}
+
+	\subsubsection{Basic Page Replacement} % (fold)
+	\label{ssub:basic_page_replacement}
+	\begin{itemize}
+		\item One solution is to find a frame not in use and replace it with the one needed by the process.
+		\item The modify bit in a page table can be used to determine if a frame has been written to. If not, it does not need to be saved and the time to free a frame and load the requested frame is halved as the original frame does not need to be saved.
+	\end{itemize}
+	% subsubsection basic_page_replacement (end)
+	
+	\subsubsection{FIFO Page Replacement} % (fold)
+	\label{ssub:fifo_page_replacement}
+	\begin{itemize}
+		\item First In First Out: The oldest page is chosen for replacement.
+		\item Belady's anomaly: For some page-replacement algorithms the page-fault rate may increase as the number of allocated frames increases.
+		\item For FIFO the number of page faults at 4 frames is higher than at 3 fames.
+	\end{itemize}
+	% subsubsection fifo_page_replacement (end)
+	
+	\subsubsection{Optimal Page Replacement} % (fold)
+	\label{ssub:optimal_page_replacement}
+	\begin{itemize}
+		\item Replace the page that will not be used for the longest period of time.
+		\item Does not suffer from Belady's anomaly.
+		\item It is difficult to implement though, as it requires future knowledge of which frame is going to be used.
+	\end{itemize}
+	% subsubsection optimal_page_replacement (end)
+	
+	\subsubsection{LRU Page Replacement} % (fold)
+	\label{ssub:lru_page_replacement}
+	\begin{itemize}
+		\item Least Recently Used algorithm.
+		\item Does not suffer from Belady's anomaly.
+	\end{itemize}
+	% subsubsection lru_page_replacement (end)
+% subsection page_replacement (end)
+
+\subsection{Allocation of Frames} % (fold)
+\label{sub:allocation_of_frames}
+	\begin{itemize}
+		\item Single-user system most simple.
+	\end{itemize}
+	
+	\subsubsection{Minimum number of Frames} % (fold)
+	\label{ssub:minimum_number_of_frames}
+	\begin{itemize}
+		\item The minimum number of pages needed for a process to function depends on the computer architecture.
+		\item Some instructions is more than two words big and therefor may need two pages.
+	\end{itemize}
+	% subsubsection minimum_number_of_frames (end)
+	
+	\subsubsection{Allocation Algorithms} % (fold)
+	\label{ssub:allocation_algorithms}
+	\begin{itemize}
+		\item Easiest algorithm is to split m frames equally among n processes.
+		\item Bigger processes probably need more frames than small processes.
+		\item Proportional allocation takes this into account.
+	\end{itemize}
+	% subsubsection allocation_algorithms (end)
+	
+	\subsubsection{Global versus Local Allocation} % (fold)
+	\label{ssub:global_versus_local_allocation}
+	\begin{itemize}
+		\item Global replacement: Victim frame is chosen among all frames.
+		\item Local replacement: Victim frame is chosen only among the process' own frames.
+		\item Higher priority processes might be able to choose victim frames from it's own frames or frames of lower priority processes.
+		\item Global replacement results in greater system throughput.
+	\end{itemize}
+	% subsubsection global_versus_local_allocation (end)
+	
+	\subsubsection{Non-Uniform Memory Access} % (fold)
+	\label{ssub:non_uniform_memory_access}
+	\begin{itemize}
+		\item Some parts of memory is faster to access than others.
+		\item Memory allocation algorithms need to take NUMA into account for best performance.
+	\end{itemize}
+	% subsubsection non_uniform_memory_access (end)
+% subsection allocation_of_frames (end)
+
+\subsection{Trashing} % (fold)
+\label{sub:trashing}
+\begin{itemize}
+	\item A process is trashing if it spends more time paging than executing.
+	\item Can be caused by the frames of the process getting below the number of frames required for executing set by the computer architecture.
+	\item Trashing severely hampers performance.
+\end{itemize}
+	
+	\subsubsection{Cause of Trashing} % (fold)
+	\label{ssub:cause_of_trashing}
+	\begin{itemize}
+		\item If a system has low CPU utilization, the OS starts up additional processes.
+		\item If a process is trashing, it uses little CPU.
+		\item Adding processes only worsens the problem.
+		\item Locality:
+		\begin{itemize}
+			\item A set of frames a process needs to function in it's current state.
+			\item A process trashes if it has less frames than it's current locality needs.
+		\end{itemize}
+	\end{itemize}
+	% subsubsection cause_of_trashing (end)
+	
+	\subsubsection{Working-Set Model} % (fold)
+	\label{ssub:working_set_model}
+	\begin{itemize}
+		\item A number $\Delta$ is chosen.
+		\item A list of unique frames used by a process in the last $\Delta$-time is saved.
+		\item The length of that list is a good approximation to how many frames it minimum needs to not trash.
+		\item Doing a sum of that number, $D$, for all processes will give a number for frames currently needed.
+		\item If $D$ is larger than what is available, some processes must be stopped.
+		\item Otherwise new processes can be started.
+	\end{itemize}
+	% subsubsection working_set_model (end)
+	
+	\subsubsection{Page-Fault Frequency} % (fold)
+	\label{ssub:page_fault_frequency}
+	\begin{itemize}
+		\item High PFF equals trashing.
+		\item When PFF is low, start more processes.
+		\item When PFF is high, suspend some processes.
+	\end{itemize}
+	% subsubsection page_fault_frequency (end)
+% subsection trashing (end)
+
+\subsection{Memory-Mapped Files} % (fold)
+\label{sub:memory_mapped_files}
+\begin{itemize}
+	\item Files and I/O can be mapped to virtual memory as well as physical memory.
+	\item The first read of the file is as fast as usual.
+	\item Subsequent reads read the file data directly from memory, greatly improving read-speed.
+	\item This can lead to increased performance.
+\end{itemize}
+% subsection memory_mapped_files (end)
+
+\addtocounter{subsection}{1}
+\subsection{Other Considerations} % (fold)
+\label{sub:other_considerations}
+	\subsubsection{Prepaging} % (fold)
+	\label{ssub:prepaging}
+	\begin{itemize}
+		\item Prepaging attempts to prevent initial high level of paging when a process starts by paging in all the frames needed at on start.
+	\end{itemize}
+	% subsubsection prepaging (end)
+	
+	\subsubsection{Page Size} % (fold)
+	\label{ssub:page_size}
+	\begin{itemize}
+		\item Smaller pages leads to better memory utilization and longer access times.
+		\item Bigger pages leads to smaller page tables and shorter access times.
+	\end{itemize}
+	% subsubsection page_size (end)
+	
+	\subsubsection{TLB Reach} % (fold)
+	\label{ssub:tlb_reach}
+	\begin{itemize}
+		\item How much of the virtual memory the TLB can map at one point.
+		\item If the TLB is smaller than a process' working set, the process spends a lot of time looking up where to find its data in the slow page table.
+	\end{itemize}
+	% subsubsection tlb_reach (end)
+	
+	\subsubsection{Inverted Page Tables} % (fold)
+	\label{ssub:inverted_page_tables}
+	\begin{itemize}
+		\item Inverted Page Tables does not hold information about the complete logical memory space.
+		\item additional information is needed when page faults occur.
+	\end{itemize}
+	% subsubsection inverted_page_tables (end)
+	
+	\subsubsection{Program Structure} % (fold)
+	\label{ssub:program_structure}
+	\begin{itemize}
+		\item Taking into account the paged structure of memory when programming/compiling/running program, performance can be increased.
+	\end{itemize}
+	% subsubsection program_structure (end)
+	
+	\subsubsection{I/O Interlock} % (fold)
+	\label{ssub:i_o_interlock}
+	\begin{itemize}
+		\item Lock Bits in a page table lock the frames so they cannot be replace by other processes.
+		\item This is handy for I/O-buffers. For example when reading data from a disk-drive.
+	\end{itemize}
+	% subsubsection i_o_interlock (end)
+% subsection other_considerations (end)
+% section virtual_memory_management (end)
 \end{document}
